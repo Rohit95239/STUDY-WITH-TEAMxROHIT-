@@ -1076,9 +1076,624 @@ const defaultNewImg =
    ACTIVE INSTITUTES
 ========================================================= */
 
-const activeApps = [
+const activeInstitutes = [
 
-{
-    id:1,
-    name:"1. CAREER WILL",
-    img:"https://encrypted
+    {
+        name: "PW",
+        tag: "Physics Wallah",
+        image: defaultNewImg,
+        link: "#"
+    },
+
+    {
+        name: "Testbook",
+        tag: "Test Series & Classes",
+        image: defaultNewImg,
+        link: "#"
+    },
+
+    {
+        name: "CareerWill",
+        tag: "Online Learning",
+        image: defaultNewImg,
+        link: "#"
+    }
+
+];
+
+
+/* =========================================================
+   UPCOMING INSTITUTES
+========================================================= */
+
+const upcomingInstitutes = [
+
+    {
+        name: "Upcoming Institute",
+        tag: "Coming Soon",
+        image: defaultNewImg,
+        link: "#"
+    }
+
+];
+
+
+/* =========================================================
+   FAVORITES
+========================================================= */
+
+let favorites =
+    JSON.parse(
+        localStorage.getItem(
+            "teamxrohit_favorites"
+        ) || "[]"
+    );
+
+
+/* =========================================================
+   RENDER ACTIVE INSTITUTES
+========================================================= */
+
+function renderActiveApps(list = activeInstitutes){
+
+    const container =
+        document.getElementById(
+            "active-apps-list"
+        );
+
+    const count =
+        document.getElementById(
+            "active-count"
+        );
+
+    container.innerHTML = "";
+
+    count.innerText =
+        list.length + " Available";
+
+
+    if(!list.length){
+
+        container.innerHTML =
+            `<div class="no-data">
+                No institute found
+            </div>`;
+
+        return;
+    }
+
+
+    list.forEach((app,index)=>{
+
+        const isFav =
+            favorites.includes(
+                app.name
+            );
+
+
+        const card =
+            document.createElement(
+                "div"
+            );
+
+        card.className =
+            "app-card";
+
+
+        card.innerHTML = `
+
+            <div class="app-info">
+
+                <img
+                    src="${app.image}"
+                    class="app-icon"
+                    alt="${app.name}"
+                    onerror="this.src=defaultNewImg"
+                >
+
+                <div class="app-details">
+
+                    <div class="app-name">
+                        ${app.name}
+                    </div>
+
+                    <div class="app-tag">
+                        ${app.tag}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="app-actions">
+
+                <button
+                    class="fav-btn ${isFav ? "active" : ""}"
+                    onclick="toggleFavorite('${escapeAttr(app.name)}')"
+                    aria-label="Favorite"
+                >
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+
+                <a
+                    href="${app.link}"
+                    class="open-btn"
+                    target="_blank"
+                    rel="noopener"
+                >
+                    OPEN
+                </a>
+
+            </div>
+
+        `;
+
+        container.appendChild(card);
+
+    });
+
+}
+
+
+/* =========================================================
+   RENDER UPCOMING
+========================================================= */
+
+function renderUpcomingApps(){
+
+    const container =
+        document.getElementById(
+            "upcoming-apps-list"
+        );
+
+    const count =
+        document.getElementById(
+            "upcoming-count"
+        );
+
+    container.innerHTML = "";
+
+    count.innerText =
+        upcomingInstitutes.length +
+        " Coming Soon";
+
+
+    if(!upcomingInstitutes.length){
+
+        container.innerHTML =
+            `<div class="no-data">
+                No upcoming institute
+            </div>`;
+
+        return;
+    }
+
+
+    upcomingInstitutes.forEach(app=>{
+
+        const card =
+            document.createElement(
+                "div"
+            );
+
+        card.className =
+            "app-card";
+
+
+        card.innerHTML = `
+
+            <div class="app-info">
+
+                <img
+                    src="${app.image}"
+                    class="app-icon"
+                    alt="${app.name}"
+                    onerror="this.src=defaultNewImg"
+                >
+
+                <div class="app-details">
+
+                    <div class="app-name">
+                        ${app.name}
+                    </div>
+
+                    <div class="app-tag">
+                        ${app.tag}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="app-actions">
+
+                <span
+                    class="open-btn"
+                    style="cursor:default;"
+                >
+                    SOON
+                </span>
+
+            </div>
+
+        `;
+
+        container.appendChild(card);
+
+    });
+
+}
+
+
+/* =========================================================
+   FAVORITE TOGGLE
+========================================================= */
+
+function toggleFavorite(name){
+
+    if(favorites.includes(name)){
+
+        favorites =
+            favorites.filter(
+                item => item !== name
+            );
+
+        showToast(
+            "Removed from Favorites"
+        );
+
+    }else{
+
+        favorites.push(name);
+
+        showToast(
+            "Added to Favorites"
+        );
+
+    }
+
+
+    localStorage.setItem(
+        "teamxrohit_favorites",
+        JSON.stringify(favorites)
+    );
+
+
+    renderActiveApps();
+
+    renderFavoritesApps();
+
+}
+
+
+/* =========================================================
+   RENDER FAVORITES
+========================================================= */
+
+function renderFavoritesApps(){
+
+    const container =
+        document.getElementById(
+            "favorites-apps-list"
+        );
+
+    container.innerHTML = "";
+
+
+    const favApps =
+        activeInstitutes.filter(
+            app =>
+                favorites.includes(
+                    app.name
+                )
+        );
+
+
+    if(!favApps.length){
+
+        container.innerHTML =
+            `<div class="no-data">
+                No favorites added yet
+            </div>`;
+
+        return;
+
+    }
+
+
+    favApps.forEach(app=>{
+
+        const card =
+            document.createElement(
+                "div"
+            );
+
+        card.className =
+            "app-card";
+
+
+        card.innerHTML = `
+
+            <div class="app-info">
+
+                <img
+                    src="${app.image}"
+                    class="app-icon"
+                    alt="${app.name}"
+                    onerror="this.src=defaultNewImg"
+                >
+
+                <div class="app-details">
+
+                    <div class="app-name">
+                        ${app.name}
+                    </div>
+
+                    <div class="app-tag">
+                        ${app.tag}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="app-actions">
+
+                <button
+                    class="fav-btn active"
+                    onclick="toggleFavorite('${escapeAttr(app.name)}')"
+                >
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+
+                <a
+                    href="${app.link}"
+                    class="open-btn"
+                    target="_blank"
+                    rel="noopener"
+                >
+                    OPEN
+                </a>
+
+            </div>
+
+        `;
+
+        container.appendChild(card);
+
+    });
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+function filterApps(){
+
+    const input =
+        document
+        .getElementById(
+            "searchInput"
+        )
+        .value
+        .toLowerCase()
+        .trim();
+
+
+    const filtered =
+        activeInstitutes.filter(app =>
+
+            app.name
+                .toLowerCase()
+                .includes(input)
+
+            ||
+
+            app.tag
+                .toLowerCase()
+                .includes(input)
+
+        );
+
+
+    renderActiveApps(filtered);
+
+}
+
+
+/* =========================================================
+   TAB SWITCH
+========================================================= */
+
+function switchTab(tab,element){
+
+    document
+        .getElementById("tab-apps")
+        .classList.add("hidden");
+
+    document
+        .getElementById("tab-upcoming")
+        .classList.add("hidden");
+
+    document
+        .getElementById("tab-favorites")
+        .classList.add("hidden");
+
+
+    document
+        .querySelectorAll(".nav-item")
+        .forEach(item =>
+            item.classList.remove("active")
+        );
+
+
+    if(tab === "apps"){
+
+        document
+            .getElementById("tab-apps")
+            .classList.remove("hidden");
+
+    }
+
+    else if(tab === "upcoming"){
+
+        document
+            .getElementById("tab-upcoming")
+            .classList.remove("hidden");
+
+    }
+
+    else if(tab === "favorites"){
+
+        document
+            .getElementById("tab-favorites")
+            .classList.remove("hidden");
+
+    }
+
+
+    if(element){
+
+        element.classList.add("active");
+
+    }
+
+}
+
+
+/* =========================================================
+   POPUP
+========================================================= */
+
+function openPopup(){
+
+    document
+        .getElementById("popupModal")
+        .style.display = "flex";
+
+}
+
+
+function closePopup(){
+
+    document
+        .getElementById("popupModal")
+        .style.display = "none";
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer;
+
+function showToast(message){
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+    toast.innerText = message;
+
+    toast.classList.add("show");
+
+
+    clearTimeout(toastTimer);
+
+
+    toastTimer =
+        setTimeout(()=>{
+
+            toast.classList.remove(
+                "show"
+            );
+
+        },2000);
+
+}
+
+
+/* =========================================================
+   ESCAPE ATTRIBUTE
+========================================================= */
+
+function escapeAttr(value){
+
+    return String(value)
+        .replace(/\\/g,"\\\\")
+        .replace(/'/g,"\\'");
+
+}
+
+
+/* =========================================================
+   SPLASH SCREEN
+========================================================= */
+
+window.addEventListener(
+    "load",
+    function(){
+
+        setTimeout(()=>{
+
+            const splash =
+                document.getElementById(
+                    "splash-screen"
+                );
+
+            if(splash){
+
+                splash.classList.add(
+                    "hide-splash"
+                );
+
+            }
+
+        },1000);
+
+    }
+);
+
+
+/* =========================================================
+   CLOSE MODAL ON BACKGROUND CLICK
+========================================================= */
+
+document
+    .getElementById("popupModal")
+    .addEventListener(
+        "click",
+        function(e){
+
+            if(e.target === this){
+
+                closePopup();
+
+            }
+
+        }
+    );
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+renderActiveApps();
+
+renderUpcomingApps();
+
+renderFavoritesApps();
+
+</script>
+
+</body>
+</html>
