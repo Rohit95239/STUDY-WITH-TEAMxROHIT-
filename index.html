@@ -930,39 +930,55 @@ body{
    AROLINKS
 ========================================================= */
 
-function openAroLinks(){
+<script>
+function openAroLinks() {
 
-    const apiToken =
-        "828c34db80ec53e94e7174f5f52e0b274a38ab2d";
-
-    const targetUrl =
-        "https://rohit95239.github.io/STUDY-WITH-TEAMxROHIT-/";
+    const apiUrl =
+        "https://arolinks.com/api?api=828c34db80ec53e94e7174f5f52e0b274a38ab2d&url=" +
+        encodeURIComponent(
+            "https://rohit95239.github.io/STUDY-WITH-TEAMxROHIT-/"
+        );
 
     const msg =
         document.getElementById("status-msg");
 
-    msg.style.color =
-        "var(--neon-cyan)";
+    msg.style.color = "var(--neon-cyan)";
+    msg.innerText = "Generating Link...";
 
-    msg.innerText =
-        "Generating Link...";
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
 
-    const apiUrl =
-        "https://arolinks.com/api?api=" +
-        apiToken +
-        "&url=" +
-        encodeURIComponent(targetUrl);
+            console.log("AroLinks:", data);
 
-    /*
-     * API response ko browser me fetch karne ki
-     * koshish nahi ki ja rahi.
-     *
-     * Direct API URL open hoga.
-     */
+            if (data.status === "success" && data.shortenedUrl) {
 
-    window.location.href = apiUrl;
+                msg.innerText = "Redirecting...";
+
+                window.location.assign(
+                    data.shortenedUrl
+                );
+
+            } else {
+
+                msg.style.color = "var(--neon-pink)";
+                msg.innerText =
+                    "Could not generate short link.";
+
+            }
+
+        })
+        .catch(error => {
+
+            console.error(error);
+
+            msg.style.color = "var(--neon-pink)";
+            msg.innerText =
+                "API blocked or Network Error!";
+
+        });
 }
-
+</script>
 
 /* =========================================================
    KEY VERIFICATION
